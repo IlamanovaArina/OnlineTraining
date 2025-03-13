@@ -16,20 +16,16 @@ class LessonListAPIView(generics.ListAPIView):
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
 
 class LessonUpdateAPIView(generics.UpdateAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer

@@ -10,4 +10,4 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class LessonSerializer(serializers.ModelSerializer):
     model = Lesson
-    fields = ('name', 'description')
+    fields = '__all__'
