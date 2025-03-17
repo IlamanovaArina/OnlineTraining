@@ -20,6 +20,7 @@ class LessonRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
+    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
 
