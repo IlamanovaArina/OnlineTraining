@@ -3,8 +3,6 @@ from django.urls import path
 from materials.apps import MaterialsConfig
 from rest_framework.routers import DefaultRouter
 
-from materials.models import Lesson
-from materials.serializers import LessonSerializer
 from materials.views import CourseViewSet, LessonListAPIView, LessonRetrieveAPIView, LessonCreateAPIView, \
     LessonUpdateAPIView, LessonDestroyAPIView
 

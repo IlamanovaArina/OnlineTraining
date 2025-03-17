@@ -1,3 +1,44 @@
-from django.shortcuts import render
+from rest_framework import viewsets
+from rest_framework import generics
+from rest_framework.filters import SearchFilter, OrderingFilter
 
-# Create your views here.
+from users.models import Payments, User
+from users.serializers import PaymentsSerializer, UserSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+
+
+# class PaymentsViewSet(viewsets.ModelViewSet):
+#     serializer_class = PaymentsSerializer
+#     queryset = Payments.objects.all()
+#     filter_backends = [SearchFilter, OrderingFilter]
+#     search_filter = ['paid_course', 'paid_lesson', 'method_payment',]
+#     ordering_filter = ['date_payment',]
+
+
+class PaymentsListAPIView(generics.ListAPIView):
+    queryset = Payments.objects.all()
+    serializer_class = PaymentsSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_filter = ['paid_course', 'paid_lesson', 'method_payment',]
+    ordering_filter = ['date_payment',]
+
+
+class PaymentsRetrieveAPIView(generics.RetrieveAPIView):
+    serializer_class = PaymentsSerializer
+
+
+class PaymentsCreateAPIView(generics.CreateAPIView):
+    queryset = Payments.objects.all()
+    serializer_class = PaymentsSerializer
+
+
+class PaymentsUpdateAPIView(generics.UpdateAPIView):
+    serializer_class = PaymentsSerializer
+
+
+class PaymentsDestroyAPIView(generics.DestroyAPIView):
+    serializer_class = PaymentsSerializer
