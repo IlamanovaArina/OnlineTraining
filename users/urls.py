@@ -1,6 +1,7 @@
 from django.urls import path
 from users.apps import UsersConfig
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 from users.views import UserViewSet, PaymentsListAPIView, PaymentsRetrieveAPIView, \
     PaymentsCreateAPIView, PaymentsUpdateAPIView, PaymentsDestroyAPIView
@@ -17,4 +18,8 @@ urlpatterns = [
       path('payments/create/', PaymentsCreateAPIView.as_view(), name='lesson-create'),
       path('payments/<int:pk>/update/', PaymentsUpdateAPIView.as_view(), name='lesson-update'),
       path('payments/<int:pk>/delite/', PaymentsDestroyAPIView.as_view(), name='lesson-delite'),
+
+      path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+      path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+      path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 ] + router.urls
