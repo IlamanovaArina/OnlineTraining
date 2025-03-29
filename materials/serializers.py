@@ -1,15 +1,21 @@
 from rest_framework import serializers
+
 from materials.models import Course, Lesson
+from materials.validators import LinkValidator
+
 
 class LessonSerializer(serializers.ModelSerializer):
+    # owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = Lesson
         fields = '__all__'
+        validators = [LinkValidator(field='link_to_video')]
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    # owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     number_lessons = serializers.SerializerMethodField()
-    # source = 'lesson_set.all.first.name'
     lessons_name = serializers.SerializerMethodField()
     lessons = LessonSerializer(many=True, read_only=True)
 
@@ -24,15 +30,8 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CourseDetailSerializer(serializers.ModelSerializer):
-    lessons = LessonSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Course
-        fields = '__all__'
-
-
 # class CourseCreateSerializer(serializers.ModelSerializer):
+#     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
 #     lessons = LessonSerializer(many=True)
 #
 #     class Meta:

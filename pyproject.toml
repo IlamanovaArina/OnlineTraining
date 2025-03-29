@@ -13,8 +13,25 @@ python-dotenv = "^1.0.1"
 pillow = "^11.1.0"
 djangorestframework = "^3.15.2"
 djangorestframework-simplejwt = "^5.5.0"
+status = "^0.2.5"
+celery = "^5.4.0"
+coverage = "^7.7.1"
+isort = "^6.0.1"
+flake8 = "^7.1.2"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[black]
+line-length = 119
+exclude = ".git"
+
+[isort]
+line_length = 119
+
+[mypy]
+disallow_untyped_defs = true
+warn_return_any = true
+exclude = "venv"

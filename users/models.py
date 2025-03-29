@@ -2,9 +2,24 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 from materials.models import Course, Lesson
+from django.contrib.auth.models import BaseUserManager
 
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("The Email field must be set")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
-# Create your models here.
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        return self.create_user(email, password, **extra_fields)
+
 
 class User(AbstractUser):
     username = None
@@ -15,6 +30,8 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.email
@@ -39,7 +56,7 @@ class Payments(models.Model):
     paid_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True, null=True, verbose_name='оплаченный урок')
     amount_payment = models.IntegerField(verbose_name='Сумма оплаты')
     method_payment = models.CharField(choices=STATUS_CHOICES, default=CASH, verbose_name='Способ оплаты')
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments', default=1, verbose_name='Владелец')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_payments', default=1, verbose_name='Владелец')
 
     class Meta:
         verbose_name = 'Платёж'
@@ -47,3 +64,4 @@ class Payments(models.Model):
 
     def __str__(self):
         return self.method_payment
+

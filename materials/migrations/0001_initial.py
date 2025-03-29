@@ -33,7 +33,8 @@ class Migration(migrations.Migration):
                 ('preview', models.ImageField(blank=True, null=True, upload_to='training/', verbose_name='Превью')),
                 ('description', models.TextField(max_length=200, verbose_name='Описание')),
                 ('link_to_video', models.CharField(max_length=100, verbose_name='Ссылка на видео')),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='materials.course', verbose_name='Связь с курсом')),
+                ('course', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='materials.course',
+                                             verbose_name='Связь с курсом')),
             ],
             options={
                 'verbose_name': 'Урок',

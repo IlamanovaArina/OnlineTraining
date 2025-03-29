@@ -16,11 +16,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='course',
             name='owner',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='course', to=settings.AUTH_USER_MODEL, verbose_name='Владелец'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='course',
+                                    to=settings.AUTH_USER_MODEL, verbose_name='Владелец'),
         ),
         migrations.AddField(
             model_name='lesson',
             name='owner',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='lesson', to=settings.AUTH_USER_MODEL, verbose_name='Владелец'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='lesson',
+                                    to=settings.AUTH_USER_MODEL, verbose_name='Владелец'),
         ),
     ]
