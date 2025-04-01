@@ -19,7 +19,7 @@ urlpatterns = [
       path('payments/<int:pk>/update/', PaymentsUpdateAPIView.as_view(), name='lesson-update'),
       path('payments/<int:pk>/delite/', PaymentsDestroyAPIView.as_view(), name='lesson-delite'),
 
-      path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-      path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-      path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+      path('user/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+      path('user/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+      path('user/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 ] + router.urls

@@ -4,10 +4,11 @@ from rest_framework.routers import SimpleRouter
 from materials.apps import MaterialsConfig
 from materials.views import (CourseViewSet, LessonCreateAPIView,
                              LessonDestroyAPIView, LessonListAPIView,
-                             LessonRetrieveAPIView, LessonUpdateAPIView)
+                             LessonRetrieveAPIView, LessonUpdateAPIView, SubscriptionViewSet)
 
 router = SimpleRouter()
 router.register(r'course', CourseViewSet, basename='course')
+router.register(r'subscription', SubscriptionViewSet, basename='subscription')
 
 # ^course/$ [name='course-list']
 # ^course\.(?P<format>[a-z0-9]+)/?$ [name='course-list']

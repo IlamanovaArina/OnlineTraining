@@ -147,27 +147,27 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'logs.log',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        # Ваш логгер
-        __name__: {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'INFO',
+#             'class': 'logging.FileHandler',
+#             'filename': 'logs.log',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],
+#             'level': 'INFO',
+#             'propagate': True,
+#         },
+#         # Ваш логгер
+#         __name__: {
+#             'handlers': ['file'],
+#             'level': 'INFO',
+#             'propagate': False,
+#         },
+#     },
+# }

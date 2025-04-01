@@ -1,11 +1,14 @@
 from rest_framework import serializers
 
-from materials.models import Course, Lesson
+from materials.models import Course, Lesson, Subscription
 from materials.validators import LinkValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):
     # owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    created_at = serializers.CharField(read_only=True)
+    updated_at = serializers.CharField(read_only=True)
+    # owner = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Lesson
@@ -15,6 +18,10 @@ class LessonSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     # owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    created_at = serializers.CharField(read_only=True)
+    updated_at = serializers.CharField(read_only=True)
+    # owner = serializers.IntegerField(read_only=True)
+
     number_lessons = serializers.SerializerMethodField()
     lessons_name = serializers.SerializerMethodField()
     lessons = LessonSerializer(many=True, read_only=True)
@@ -28,6 +35,17 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
+
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    # read_only=True
+    created_at = serializers.CharField(read_only=True)
+    owner = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Subscription
+        fields = '__all__'
+
 
 
 # class CourseCreateSerializer(serializers.ModelSerializer):

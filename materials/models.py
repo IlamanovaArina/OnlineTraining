@@ -28,6 +28,8 @@ class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.PROTECT, blank=True, null=True, verbose_name='course')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1,
                               related_name='owner_lesson', verbose_name='Владелец')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
 
     class Meta:
         verbose_name = 'Урок'

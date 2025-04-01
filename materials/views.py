@@ -1,10 +1,12 @@
 from datetime import timedelta
 from django.utils import timezone
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
 from materials.models import Course, Lesson, Subscription
 from materials.paginators import MaterialsPagination
-from materials.serializers import CourseSerializer, LessonSerializer
+from materials.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
 from users.permissions import IsOwner, ModeratorPermission
 from users.tasks import send_course_update_message
 
@@ -15,6 +17,12 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all().order_by('id')
     pagination_class = MaterialsPagination
+
+    def log_update(self, course):
+        # Логика для логирования обновлений
+        print(f'Объект {course.id} был обновлен')
+        print(f'Подробности: id: {course.id}, name: {course.name}, owner: {course.owner}, '
+              f'updated_at: {course.updated_at}.')
 
     def get_permissions(self):
         """Метод получения разрешений на доступ к эндпоитам в соответствии с запросом."""
@@ -30,20 +38,15 @@ class CourseViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """Метод вносит изменение в сериализатор создания "Курса"."""
 
-        new_lesson = serializer.save()
-        new_lesson.owner = self.request.user
-        new_lesson.save()
+        new_course = serializer.save()
+        new_course.owner = self.request.user
+        new_course.save()
 
     def perform_update(self, serializer):
         """Метод вносит изменение в сериализатор редактирования "Курса"."""
 
         course = serializer.save()
-        if course.updated_at:
-            time_difference = timezone.now() - course.updated_at
-            if time_difference > timedelta(hours=4):
-                send_course_update_message.delay(course)
-        else:
-            send_course_update_message.delay(course)
+        # self.log_update(course)
         course.updated_at = timezone.now()
         course.save()
 
@@ -56,28 +59,39 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 class SubscriptionViewSet(viewsets.ModelViewSet):
+    """Класс представления вида ViewSet для эндпоинтов подписки."""
+    serializer_class = SubscriptionSerializer
     queryset = Subscription.objects.all().order_by('id')
 
-    # def post(self, *args, **kwargs):
-    #     # получаем пользователя
-    #     user = self.requests.user
-    #     # получаем id курса из self.requests.data
-    #     course_id = self.requests.data.id
-    #     # получаем объект курса из базы
-    #     course_item = get_object_or_404(Course, id=course_id)
-    #     # получаем объекты подписок по текущему пользователю и курса
-    #     subs_item = get_object_or_404(Subscription, )
-    #
-    #     # Если подписка у пользователя на этот курс есть - удаляем ее
-    #     if subs_item.exists():
-    #         ...
-    #         message = 'подписка удалена'
-    #     # Если подписки у пользователя на этот курс нет - создаем ее
-    #     else:
-    #         ...
-    #         message = 'подписка добавлена'
-    #     # Возвращаем ответ в API
-    #     return Response({"message": message})
+    def log(self, subscription, message):
+        # Логика для логирования обновлений
+        print(f'Объект {subscription.id} был {message}.')
+        print(f'Подробности: id: {subscription.id}, course: {subscription.course}, user: {subscription.user}, '
+              f'created_at: {subscription.created_at}.')
+
+    def perform_create(self, serializer):
+        """Метод вносит изменение в сериализатор создания подписки."""
+        user = self.request.user
+        course = serializer.validated_data['course']  # Получаем курс из валидированных данных
+        subscription = Subscription.objects.filter(owner=user, course=course, is_active=True).exists()
+
+        # Проверяем, есть ли уже активная подписка на данный курс
+        if subscription:
+            return Response({"message": "У вас уже есть активная подписка на этот курс."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Если нет активной подписки, сохраняем новую
+        subscription1 = serializer.save(owner=user)
+        # self.log(subscription1, 'создан')
+        return Response({"message": f"Подписка на курс: {course} добавлена."}, status=status.HTTP_201_CREATED)
+
+    def perform_update(self, serializer):
+        """Метод вносит изменение в сериализатор редактирования "Курса"."""
+
+        course = serializer.save()
+        # self.log(course, 'обновлён')
+        course.updated_at = timezone.now()
+        course.save()
 
 
 class LessonListAPIView(generics.ListAPIView):
@@ -98,8 +112,8 @@ class LessonRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all().order_by('id')
     # permission_classes = [AllowAny]
-    permission_classes = [IsAuthenticated]
-    # permission_classes = [IsAuthenticated & ModeratorPermission | IsOwner]
+    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated & ModeratorPermission | IsOwner]
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
@@ -119,28 +133,41 @@ class LessonCreateAPIView(generics.CreateAPIView):
 class LessonUpdateAPIView(generics.UpdateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated]
-    # permission_classes = [IsAuthenticated & ModeratorPermission | IsOwner]
+    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated & ModeratorPermission | IsOwner]
 
-    # def perform_update(self, serializer):
-    #     """Метод вносит изменение в сериализатор редактирования "Урока"."""
-    #
-    #     lesson = serializer.save()
-    #     courses = Course.objects.filter(id=lesson.course.pk)
-    #     for course in courses:
-    #         if lesson.updated_at:
-    #             time_difference = timezone.now() - lesson.updated_at
-    #             if time_difference > timedelta(hours=4):
-    #                 send_course_update_message.delay(course.pk)
-    #         else:
-    #             send_course_update_message.delay(course.pk)
-    #     lesson.updated_at = timezone.now()
-    #     courses.updated_at = timezone.now()
-    #     lesson.save()
+    def update(self, request, *args, **kwargs):
+        # Переопределяем метод update
+        partial = kwargs.pop('partial', False)  # Для частичного обновления
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
+
+    def log_update(self, lesson):
+        # Логика для логирования обновлений
+        print(f'Объект {lesson.id} был обновлен')
+        print(f'Подробности: id: {lesson.id}, name: {lesson.name}, owner: {lesson.owner}, '
+              f'updated_at: {lesson.updated_at}, course: {lesson.course}.')
+
+    def perform_update(self, serializer):
+        """Метод вносит изменение в сериализатор редактирования "Урока"."""
+
+        lesson = serializer.save()
+        # self.log_update(lesson)
+
+        if lesson.course:
+            lesson.courses.updated_at = timezone.now()
+            lesson.courses.save()
+
+        lesson.updated_at = timezone.now()
+        lesson.save()
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated]
-    # permission_classes = [IsAuthenticated & ModeratorPermission | IsOwner]
+    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated & ModeratorPermission | IsOwner]
