@@ -27,6 +27,9 @@ INSTALLED_APPS = [
 
     'rest_framework_simplejwt',
     'rest_framework',
+    # 'django.contrib.staticfiles',  # требуется для обслуживания файлов css/js интерфейса swagger
+    'drf_yasg',
+    'corsheaders',
 
     'users',
     'materials',
@@ -41,6 +44,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -117,6 +121,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://127.0.0.1:9000",
+]
+
+CORS_ALLOW_ALL_ORIGINS = False
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8080",
+    "http://127.0.0.1:9000",
+]
 
 LANGUAGE_CODE = 'en-us'
 
@@ -171,3 +186,5 @@ LOGOUT_REDIRECT_URL = '/'
 #         },
 #     },
 # }
+
+API_KEY = 'sk_test_51R90DTB9jmJyktuKURwVcCoEH17xdHK9rgBvZf9xJKUlWU9Ek36JCh25nYy0vVje8uXZU0kyQrrelgzRsvtBj2cF0059vTjJsN'

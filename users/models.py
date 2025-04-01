@@ -50,18 +50,20 @@ class Payments(models.Model):
         (TRANSFER, 'Перевод'),
     ]
 
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_payment = models.DateTimeField(auto_now_add=True, verbose_name='Дата платежа')
     paid_course = models.ForeignKey(Course, on_delete=models.CASCADE, blank=True, null=True, verbose_name='оплаченный курс')
     paid_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True, null=True, verbose_name='оплаченный урок')
-    amount_payment = models.IntegerField(verbose_name='Сумма оплаты')
+    amount_payment = models.PositiveIntegerField(verbose_name='Сумма оплаты', blank=True, null=True)
     method_payment = models.CharField(choices=STATUS_CHOICES, default=CASH, verbose_name='Способ оплаты')
+    session_id = models.CharField(max_length=250, blank=True, null=True, verbose_name='ID сессии')
+    link = models.URLField(max_length=400, blank=True, null=True, verbose_name='Ссылка на оплату')
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_payments', default=1, verbose_name='Владелец')
+
 
     class Meta:
         verbose_name = 'Платёж'
         verbose_name_plural = 'Платежи'
 
     def __str__(self):
-        return self.method_payment
+        return self.method_payment, self.amount
 

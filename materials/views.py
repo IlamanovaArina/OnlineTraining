@@ -1,13 +1,16 @@
-from datetime import timedelta
+from locale import currency
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticated
+
+from config import settings
 from materials.models import Course, Lesson, Subscription
 from materials.paginators import MaterialsPagination
 from materials.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
 from users.permissions import IsOwner, ModeratorPermission
+from users.services import create_stripe_product, modify_stripe_product
 from users.tasks import send_course_update_message
 
 
@@ -40,7 +43,9 @@ class CourseViewSet(viewsets.ModelViewSet):
 
         new_course = serializer.save()
         new_course.owner = self.request.user
+        new_course.id_stripe_product = create_stripe_product(new_course).id
         new_course.save()
+
 
     def perform_update(self, serializer):
         """Метод вносит изменение в сериализатор редактирования "Курса"."""
@@ -48,6 +53,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         course = serializer.save()
         # self.log_update(course)
         course.updated_at = timezone.now()
+        modify_stripe_product(course)
         course.save()
 
     def get_queryset(self):
