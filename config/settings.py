@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     # 'django.contrib.staticfiles',  # требуется для обслуживания файлов css/js интерфейса swagger
     'drf_yasg',
     'corsheaders',
+    'django_celery_beat',
 
     'users',
     'materials',
@@ -123,6 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
+    "http://localhost:8000",
     "http://127.0.0.1:9000",
 ]
 
@@ -130,6 +132,7 @@ CORS_ALLOW_ALL_ORIGINS = False
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8080",
+    "http://localhost:8000",
     "http://127.0.0.1:9000",
 ]
 
@@ -188,3 +191,29 @@ LOGOUT_REDIRECT_URL = '/'
 # }
 
 API_KEY = 'sk_test_51R90DTB9jmJyktuKURwVcCoEH17xdHK9rgBvZf9xJKUlWU9Ek36JCh25nYy0vVje8uXZU0kyQrrelgzRsvtBj2cF0059vTjJsN'
+
+
+
+# Настройки для Celery
+# URL-адрес брокера сообщений
+CELERY_BROKER_URL = 'redis://localhost:6379/0' # Например, Redis, который по умолчанию работает на порту 6379
+
+# URL-адрес брокера результатов, также Redis
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+# Часовой пояс для работы Celery
+# CELERY_TIMEZONE = "Moscow"
+CELERY_TIMEZONE = TIME_ZONE
+
+# Флаг отслеживания выполнения задач
+CELERY_TASK_TRACK_STARTED = True
+
+# Максимальное время на выполнение задачи
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+CELERY_BEAT_SCHEDULE = {
+    'task-name': {
+        'task': 'materials.tasks.set_schedule',  # Путь к задаче
+        'schedule': timedelta(days=1),  # Расписание выполнения задачи (например, каждые 10 минут)
+    },
+}

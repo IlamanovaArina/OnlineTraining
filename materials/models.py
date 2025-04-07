@@ -4,6 +4,8 @@ from config import settings
 
 
 class Course(models.Model):
+    """ Модель Курс """
+
     name = models.CharField(max_length=50, verbose_name='Название')
     id_stripe_product = models.CharField(max_length=100, blank=True, null=True, default='', verbose_name='Название для оплаты')
     preview = models.ImageField(upload_to='training/', blank=True, null=True, verbose_name='Превью')
@@ -23,6 +25,8 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    """ Модель Урок """
+
     name = models.CharField(max_length=100, verbose_name='Название')
     id_stripe_product = models.CharField(max_length=100, blank=True, null=True, default='', verbose_name='Название для оплаты')
     preview = models.ImageField(upload_to='training/', blank=True, null=True, verbose_name='Превью')
@@ -44,6 +48,8 @@ class Lesson(models.Model):
 
 
 class Subscription(models.Model):
+    """ Модель подписки на курс """
+
     course = models.ForeignKey(Course, on_delete=models.PROTECT, blank=True, null=True, verbose_name='course')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='owner_subscription',
                              default=1, verbose_name='Владелец')
