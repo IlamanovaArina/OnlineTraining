@@ -5,10 +5,8 @@ from materials.validators import LinkValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):
-    # owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     created_at = serializers.CharField(read_only=True)
     updated_at = serializers.CharField(read_only=True)
-    # owner = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Lesson
@@ -17,19 +15,19 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    # owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     created_at = serializers.CharField(read_only=True)
     updated_at = serializers.CharField(read_only=True)
-    # owner = serializers.IntegerField(read_only=True)
 
     number_lessons = serializers.SerializerMethodField()
     lessons_name = serializers.SerializerMethodField()
     lessons = LessonSerializer(many=True, read_only=True)
 
     def get_lessons_name(self, obj):
+        """  """
         return [lesson.name for lesson in Lesson.objects.filter(course=obj)]
 
     def get_number_lessons(self, obj):
+        """  """
         return Lesson.objects.filter(course=obj).count()
 
     class Meta:
@@ -45,7 +43,6 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
         fields = '__all__'
-
 
 
 # class CourseCreateSerializer(serializers.ModelSerializer):

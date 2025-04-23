@@ -10,7 +10,6 @@ load_dotenv(override=True)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-# 'django-insecure-og%bcpn1ml!^b287ie+=()#9bk=fd2#4p1$%i$lo-5g-!fgz)h'
 
 DEBUG = True if os.getenv('DEBUG') == 'True' else False
 
@@ -87,6 +86,21 @@ DATABASES = {
 #     }
 # }
 
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
 # Настройки JWT-токенов
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -105,22 +119,6 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
-
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
@@ -190,8 +188,8 @@ LOGOUT_REDIRECT_URL = '/'
 #     },
 # }
 
+# АПИ из стрип оплаты
 API_KEY = 'sk_test_51R90DTB9jmJyktuKURwVcCoEH17xdHK9rgBvZf9xJKUlWU9Ek36JCh25nYy0vVje8uXZU0kyQrrelgzRsvtBj2cF0059vTjJsN'
-
 
 
 # Настройки для Celery
