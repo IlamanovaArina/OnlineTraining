@@ -1,0 +1,40 @@
+version: "3.12.5"
+
+services:
+  materials:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - DEBUG=True
+      - HOST=db
+    volumes:
+      - .:/code
+      - static_volume:/code/static
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17.0
+    env_file:
+      - .env
+    expose:
+      - "5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U POSTGRES_USER" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+networks:
+  default:
+
+volumes:
+  postgres_data:
+  static_volume:

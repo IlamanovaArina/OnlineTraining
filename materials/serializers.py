@@ -21,14 +21,23 @@ class CourseSerializer(serializers.ModelSerializer):
     number_lessons = serializers.SerializerMethodField()
     lessons_name = serializers.SerializerMethodField()
     lessons = LessonSerializer(many=True, read_only=True)
+    subscription = serializers.SerializerMethodField()
 
     def get_lessons_name(self, obj):
-        """  """
+        """ Получаем названия уроков из указанного курса """
         return [lesson.name for lesson in Lesson.objects.filter(course=obj)]
 
     def get_number_lessons(self, obj):
-        """  """
+        """ Получаем количество уроков в курсе """
         return Lesson.objects.filter(course=obj).count()
+
+    def get_subscription(self, obj):
+        """ Получаем подписку на курс """
+        try:
+            subscription = Subscription.objects.filter(course=obj, user=self.user)
+            return subscription
+        except Exception as e:
+            print(f"Возникла ошибка в отображении информации о подписки на курс: {e}")
 
     class Meta:
         model = Course

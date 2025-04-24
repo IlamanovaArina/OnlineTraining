@@ -71,9 +71,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('NAME'),
-        'USER': os.getenv('USER'),
-        'PASSWORD': os.getenv('PASSWORD'),
+        'NAME': os.getenv('POSTGRES_NAME'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': os.getenv('HOST'),
         'PORT': os.getenv('PORT'),
     }
@@ -189,7 +189,8 @@ LOGOUT_REDIRECT_URL = '/'
 # }
 
 # АПИ из стрип оплаты
-API_KEY = 'sk_test_51R90DTB9jmJyktuKURwVcCoEH17xdHK9rgBvZf9xJKUlWU9Ek36JCh25nYy0vVje8uXZU0kyQrrelgzRsvtBj2cF0059vTjJsN'
+STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
+
 
 
 # Настройки для Celery
