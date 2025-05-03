@@ -2,11 +2,16 @@
 FROM python:3.12.5-slim
 
 # Устанавливаем рабочую директорию в контейнере
-WORKDIR /materials
+WORKDIR /OnlineTraining
 
 # Копируем файл с зависимостями и устанавливаем их
-COPY requirements.txt ./
-RUN pip install -r requirements.txt
+COPY requirements.txt .
+
+RUN apt-get update && \
+    apt-get install -y gcc libpq-dev && \
+    pip install --no-cache-dir -r requirements.txt && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Копируем остальные файлы проекта в контейнер
 COPY . .
@@ -15,4 +20,4 @@ COPY . .
 EXPOSE 8000
 
 # Определяем команду для запуска приложения
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
