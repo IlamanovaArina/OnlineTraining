@@ -1,5 +1,3 @@
-version: "3.12.5"
-
 services:
   materials:
     build: .
@@ -38,12 +36,6 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/media
-
-#  celery:
-#    image: celery:latest
-#    command: celery -A config worker -l INFO -P eventlet
-#    volumes:
-#      - celery_data:/media
 
   worker:
     image: celery:latest
