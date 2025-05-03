@@ -24,7 +24,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         """Метод получения разрешений на доступ к эндпоитам в соответствии с запросом."""
 
         if self.action in ['create', 'put']:
-            self.permission_classes = [IsAuthenticated & ModeratorPermission]
+            self.permission_classes = [IsAuthenticated | ModeratorPermission]
         elif self.action in ['list', 'change', 'retrieve']:
             self.permission_classes = [IsAuthenticated & IsOwner | IsAuthenticated & ModeratorPermission]
         elif self.action in ['destroy']:
@@ -42,8 +42,6 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         """Метод вносит изменение в сериализатор редактирования "Курса"."""
-
-        course = serializer.save()
 
         course = serializer.save()
 
@@ -152,17 +150,19 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
+        course_id = 0
         if request.data.get("course"):
             course_id = request.data.get("course")
-        elif self.course:
-            course_id = self.course
+        # elif self.course:
+        #     course_id = self.course
 
-        subscriptions = Subscription.objects.filter(course=course_id)
-        course = Course.objects.filter(id=course_id)
-        recipient_list = [subscriptions.owner.email for subscriptions in subscriptions]
+        if course_id:
+            subscriptions = Subscription.objects.filter(course=course_id)
+            course = Course.objects.filter(id=course_id)
+            recipient_list = [subscriptions.owner.email for subscriptions in subscriptions]
 
-        # Асинхронная отправка писем подписчикам курса, о произошедших обновлениях урока
-        send_course_or_lesson_update_message.delay(course[0].name, recipient_list, 'Урок')
+            # Асинхронная отправка писем подписчикам курса, о произошедших обновлениях урока
+            send_course_or_lesson_update_message.delay(course[0].name, recipient_list, 'Урок')
 
         return Response(serializer.data)
 

@@ -1,0 +1,69 @@
+version: "3.12.5"
+
+services:
+  materials:
+    build: .
+    command: python manage.py migration && python manage.py runserver 0.0.0.0:8000
+    environment:
+      - DEBUG=True
+      - HOST=db
+    volumes:
+      - .:/code
+      - static_volume:/media
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17.0
+    env_file:
+      - .env
+    expose:
+      - "5432"
+    volumes:
+      - postgres_data:/media
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U POSTGRES_USER" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/media
+
+#  celery:
+#    image: celery:latest
+#    command: celery -A config worker -l INFO -P eventlet
+#    volumes:
+#      - celery_data:/media
+
+  worker:
+    image: celery:latest
+    command: celery -A config worker -l INFO -P eventlet
+    depends_on:
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+
+  beat:
+    image: celery:latest
+    command: celery -A config beat -l INFO -S django -P eventlet
+    depends_on:
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+
+networks:
+  default:
+
+volumes:
+  postgres_data:
+  static_volume:

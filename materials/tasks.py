@@ -1,5 +1,5 @@
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
-from celery import Celery
+from celery import Celery, shared_task
 from users.models import User
 from datetime import timedelta
 from django.utils import timezone
@@ -27,7 +27,7 @@ def send_course_or_lesson_update_message(title, recipient_list, name):
             recipient_list = ['ilamanova.arina@gmail.com']
 
         send_mail(
-            subject=f'В  произошли изменения',
+            subject=f'В произошли изменения',
             message=f'В {course_or_lesson} "{title}" произошли изменения',
             from_email=EMAIL_HOST_USER,
             recipient_list=recipient_list,
@@ -40,6 +40,7 @@ def send_course_or_lesson_update_message(title, recipient_list, name):
         raise smtplib.SMTPException
 
 
+@app.task
 def blocking_inactive_users():
     """Блокирует пользователей неактивных более 30 дней."""
 
@@ -68,7 +69,7 @@ def blocking_inactive_users():
         raise smtplib.SMTPException
 
 
-# @app.on_configure.connect
+@shared_task
 def set_schedule(sender: Celery, **kwargs):
     """ Задача по расписанию: проверять и отключать пользователей, которые не входили в систему больше 30 дней """
 

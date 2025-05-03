@@ -5,10 +5,8 @@ from materials.validators import LinkValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):
-    # owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     created_at = serializers.CharField(read_only=True)
     updated_at = serializers.CharField(read_only=True)
-    # owner = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Lesson
@@ -17,20 +15,29 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    # owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     created_at = serializers.CharField(read_only=True)
     updated_at = serializers.CharField(read_only=True)
-    # owner = serializers.IntegerField(read_only=True)
 
     number_lessons = serializers.SerializerMethodField()
     lessons_name = serializers.SerializerMethodField()
     lessons = LessonSerializer(many=True, read_only=True)
+    subscription = serializers.SerializerMethodField()
 
     def get_lessons_name(self, obj):
+        """ Получаем названия уроков из указанного курса """
         return [lesson.name for lesson in Lesson.objects.filter(course=obj)]
 
     def get_number_lessons(self, obj):
+        """ Получаем количество уроков в курсе """
         return Lesson.objects.filter(course=obj).count()
+
+    def get_subscription(self, obj):
+        """ Получаем подписку на курс """
+        try:
+            subscription = Subscription.objects.filter(course=obj, user=self.user)
+            return subscription
+        except Exception as e:
+            print(f"Возникла ошибка в отображении информации о подписки на курс: {e}")
 
     class Meta:
         model = Course
@@ -45,7 +52,6 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
         fields = '__all__'
-
 
 
 # class CourseCreateSerializer(serializers.ModelSerializer):
