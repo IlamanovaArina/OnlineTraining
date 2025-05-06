@@ -54,8 +54,8 @@ jobs:
       - name: Run tests
         run: python manage.py test
         env:
-          SECRET_KEY: test_secret_key
-#          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+#          SECRET_KEY: test_secret_key
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
   build:
     needs: test
