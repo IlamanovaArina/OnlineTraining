@@ -16,7 +16,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     """Класс представления вида ViewSet для эндпоинтов курса."""
 
     serializer_class = CourseSerializer
-    queryset = Course.objects.all().order_by('id')
+    queryset = Course.objects.all().order_by('created_at').distinct()
     pagination_class = MaterialsPagination
     permission_classes = [AllowAny]
 
@@ -38,7 +38,6 @@ class CourseViewSet(viewsets.ModelViewSet):
         new_course.owner = self.request.user
         new_course.id_stripe_product = create_stripe_product(new_course).id
         new_course.save()
-
 
     def perform_update(self, serializer):
         """Метод вносит изменение в сериализатор редактирования "Курса"."""

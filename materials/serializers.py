@@ -23,6 +23,10 @@ class CourseSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True, read_only=True)
     subscription = serializers.SerializerMethodField()
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)  # Извлекаем пользователя из аргументов
+        super().__init__(*args, **kwargs)
+
     def get_lessons_name(self, obj):
         """ Получаем названия уроков из указанного курса """
         return [lesson.name for lesson in Lesson.objects.filter(course=obj)]
@@ -34,8 +38,10 @@ class CourseSerializer(serializers.ModelSerializer):
     def get_subscription(self, obj):
         """ Получаем подписку на курс """
         try:
-            subscription = Subscription.objects.filter(course=obj, user=self.user)
-            return subscription
+            if self.user is not None:
+                subscription = Subscription.objects.filter(course=obj, owner=self.user).first()
+                return subscription
+            return None
         except Exception as e:
             print(f"Возникла ошибка в отображении информации о подписки на курс: {e}")
 
