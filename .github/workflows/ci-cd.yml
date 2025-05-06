@@ -48,13 +48,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt 
 
-#      - name: Run migrations
-#        run: python manage.py migrate
+      - name: Run migrations
+        run: python manage.py migrate
 
       - name: Run tests
         run: python manage.py test
         env:
-          DJANGO_SECRET_KEY: test_secret_key # Любое значение, это просто как заглушка
+          SECRET_KEY: test_secret_key # Любое значение, это просто как заглушка
 
   build:
     needs: test
