@@ -126,4 +126,3 @@ jobs:
             sudo docker container rm $(docker ps -a -q)
             sudo docker compose up -d --build
           EOF
-
