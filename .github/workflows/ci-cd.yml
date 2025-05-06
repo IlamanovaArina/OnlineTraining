@@ -48,13 +48,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt 
 
-      - name: Run migrations
-        run: python manage.py migrate
+#      - name: Run migrations
+#        run: python manage.py migrate
 
       - name: Run tests
         run: python manage.py test
         env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          SECRET_KEY: test_secret_key
+#          SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
   build:
     needs: test
