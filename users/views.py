@@ -3,9 +3,9 @@ from rest_framework import generics
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from users.models import Payments, User
-from users.permissions import ModeratorPermission, IsOwner
+from users.permissions import IsOwner
 from users.serializers import PaymentsSerializer, UserSerializer
-from users.services import create_stripe_product, create_stripe_session, create_stripe_price
+from users.services import create_stripe_session, create_stripe_price
 
 
 class UserViewSet(viewsets.ModelViewSet):

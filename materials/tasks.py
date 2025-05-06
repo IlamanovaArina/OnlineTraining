@@ -8,7 +8,6 @@ from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse
 import smtplib
 
-
 app = Celery('tasks', broker='redis://localhost:6379/0')
 
 
@@ -27,7 +26,7 @@ def send_course_or_lesson_update_message(title, recipient_list, name):
             recipient_list = ['ilamanova.arina@gmail.com']
 
         send_mail(
-            subject=f'В произошли изменения',
+            subject=f'В {course_or_lesson} произошли изменения',
             message=f'В {course_or_lesson} "{title}" произошли изменения',
             from_email=EMAIL_HOST_USER,
             recipient_list=recipient_list,
@@ -75,16 +74,16 @@ def set_schedule(sender: Celery, **kwargs):
 
     # Создаем интервал для повтора
     schedule, created = IntervalSchedule.objects.get_or_create(
-         every=1,
-         period=IntervalSchedule.DAYS,
-     )
+        every=1,
+        period=IntervalSchedule.DAYS,
+    )
 
     # Создаем задачу для повторения
     PeriodicTask.objects.create(
-         interval=schedule,
-         name='Проверка авторизации пользователя.',
-         task='materials.tasks.blocking_inactive_users',
-     )
+        interval=schedule,
+        name='Проверка авторизации пользователя.',
+        task='materials.tasks.blocking_inactive_users',
+    )
 
     # celery -A config worker -l INFO -P eventlet
     # celery -A config beat -l INFO -S django -P eventlet

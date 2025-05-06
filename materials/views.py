@@ -1,4 +1,3 @@
-from locale import currency
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.response import Response
@@ -86,7 +85,7 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_400_BAD_REQUEST)
 
         # Если нет активной подписки, сохраняем новую
-        subscription1 = serializer.save(owner=user)
+        serializer.save(owner=user)
         # self.log(subscription1, 'создан')
         return Response({"message": f"Подписка на курс: {course} добавлена."}, status=status.HTTP_201_CREATED)
 
