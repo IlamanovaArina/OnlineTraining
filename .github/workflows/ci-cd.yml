@@ -54,7 +54,7 @@ jobs:
       - name: Run tests
         run: python manage.py test
         env:
-          SECRET_KEY: test_secret_key # Любое значение, это просто как заглушка
+          DJANGO_SECRET_KEY: test_secret_key # Любое значение, это просто как заглушка
 
   build:
     needs: test
