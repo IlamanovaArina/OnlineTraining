@@ -80,8 +80,6 @@ jobs:
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nginx:latest
 
-
-
   copy_files_in_server:
     needs: test
     runs-on: ubuntu-latest
