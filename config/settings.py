@@ -67,13 +67,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-if 'test' in sys.argv:
+if 'pytest' in sys.argv or 'test' in sys.argv:
+    print("База данных определена как: sqlite3")
     DATABASES = {
         "default": {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'test_db.sqlite3',
+            'NAME': str(BASE_DIR / 'test_db.sqlite3'),  # Добавлен str() для преобразования Path в строку
+            'TEST': {
+                'NAME': str(BASE_DIR / 'test_db.sqlite3'),
+            }
         }
     }
+
 else:
     DATABASES = {
         "default": {
@@ -163,12 +168,10 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-# STATIC_ROOT = '/app/staticfiles/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-# MEDIA_ROOT = [os.path.join(BASE_DIR, 'staticfiles')]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
