@@ -97,8 +97,7 @@ jobs:
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           TESTING: '1'
-        run: python manage.py test
-
+        run: python manage.py test --noinput
 
   build:
     needs: test
