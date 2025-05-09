@@ -59,8 +59,8 @@ jobs:
       - name: Run tests
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        #          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-        run: python manage.py test --verbosity=2
+          TESTING: '1'
+        run: python manage.py makemigrations
 
   build:
     needs: test

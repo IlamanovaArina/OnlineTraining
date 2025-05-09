@@ -68,7 +68,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-if 'pytest' in sys.argv or 'test' in sys.argv:
+if os.getenv('TESTING') == '1':
     print("База данных определена как: sqlite3")
     print(str(BASE_DIR / 'test_db.sqlite3'), type(str(BASE_DIR / 'test_db.sqlite3')))
     DATABASES = {
