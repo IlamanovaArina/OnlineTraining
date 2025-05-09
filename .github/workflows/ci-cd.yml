@@ -149,7 +149,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
+          key: ${{ secrets.SSH_KEY_PRIVATE }}
           source: "docker-compose.yml,.env"
           target: ${{ secrets.DEPLOY_DIR }}
 
