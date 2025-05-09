@@ -142,7 +142,7 @@ jobs:
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.8.0
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
+          ssh-private-key: ${{ secrets.SSH_KEY_PRIVATE }}
 
       - name: Copy file
         uses: appleboy/scp-action@v0.1.7
