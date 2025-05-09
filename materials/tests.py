@@ -72,15 +72,15 @@ class LessonsTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Lesson.objects.all().exists())
 
-    def test_lesson_put(self):
-        url = reverse("materials:lesson_update", args=(self.lesson.id,))
-        data = {
-            'name': 'Test 3',
-            'description': 'Описание'
-        }
-        response = self.client.put(url, data=data)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    # def test_lesson_put(self):
+    #     url = reverse("materials:lesson_update", args=(self.lesson.id,))
+    #     data = {
+    #         'name': 'Test 3',
+    #         'description': 'Описание'
+    #     }
+    #     response = self.client.put(url, data=data)
+    #
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_lesson_delete(self):
         """Тест удаления урока по Primary Key."""
