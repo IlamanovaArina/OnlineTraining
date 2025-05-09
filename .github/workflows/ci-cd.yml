@@ -62,6 +62,7 @@ jobs:
           TESTING: '1'
         run: python manage.py makemigrations
 
+
   build:
     needs: test
     runs-on: ubuntu-latest
