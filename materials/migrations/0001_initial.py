@@ -16,7 +16,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=50, verbose_name='Название')),
-                ('id_stripe_product', models.CharField(blank=True, default='', max_length=100, null=True, verbose_name='Название для оплаты')),
+                ('id_stripe_product', models.CharField(blank=True, default='', max_length=100, null=True,
+                                                       verbose_name='Название для оплаты')),
                 ('preview', models.ImageField(blank=True, null=True, upload_to='training/', verbose_name='Превью')),
                 ('description', models.TextField(blank=True, max_length=200, null=True, verbose_name='Описание')),
                 ('price', models.IntegerField(default=0, verbose_name='Цена')),
@@ -33,7 +34,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100, verbose_name='Название')),
-                ('id_stripe_product', models.CharField(blank=True, default='', max_length=100, null=True, verbose_name='Название для оплаты')),
+                ('id_stripe_product', models.CharField(blank=True, default='', max_length=100, null=True,
+                                                       verbose_name='Название для оплаты')),
                 ('preview', models.ImageField(blank=True, null=True, upload_to='training/', verbose_name='Превью')),
                 ('description', models.TextField(blank=True, max_length=200, null=True, verbose_name='Описание')),
                 ('link_to_video', models.URLField(blank=True, null=True, verbose_name='Ссылка на видео')),
