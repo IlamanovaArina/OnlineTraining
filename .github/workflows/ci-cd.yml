@@ -57,10 +57,10 @@ jobs:
         run: python manage.py migrate
 
       - name: Run tests
-        run: python manage.py test --verbosity=2
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-#          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        #          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        run: python manage.py test --verbosity=2
 
   build:
     needs: test
