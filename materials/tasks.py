@@ -7,6 +7,10 @@ from config.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse
 import smtplib
+import stripe
+import os
+
+stripe.api_key = os.getenv('STRIPE_API_KEY')
 
 app = Celery('tasks', broker='redis://localhost:6379/0')
 
