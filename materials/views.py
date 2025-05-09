@@ -86,7 +86,6 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
 
         # Если нет активной подписки, сохраняем новую
         serializer.save(owner=user)
-        # self.log(subscription1, 'создан')
         return Response({"message": f"Подписка на курс: {course} добавлена."}, status=status.HTTP_201_CREATED)
 
     def perform_update(self, serializer):
