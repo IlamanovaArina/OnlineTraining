@@ -95,8 +95,7 @@ jobs:
 
       - name: Run tests
         env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          TESTING: '1'
+          STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
         run: python manage.py test --noinput
 
   build:
