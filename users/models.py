@@ -61,7 +61,7 @@ class Payments(models.Model):
                                       verbose_name='Способ оплаты')
     session_id = models.CharField(max_length=250, blank=True, null=True, verbose_name='ID сессии')
     link = models.URLField(max_length=400, blank=True, null=True, verbose_name='Ссылка на оплату')
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_payments', default=1,
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_payments',
                               verbose_name='Владелец')
 
     class Meta:
