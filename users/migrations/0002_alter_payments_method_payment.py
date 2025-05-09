@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='payments',
             name='method_payment',
-            field=models.CharField(choices=[('Наличные', 'Наличные'), ('Перевод', 'Перевод')], default='Наличные', max_length=250, verbose_name='Способ оплаты'),
+            field=models.CharField(choices=[('Наличные', 'Наличные'), ('Перевод', 'Перевод')],
+                                   default='Наличные', max_length=250, verbose_name='Способ оплаты'),
         ),
     ]
