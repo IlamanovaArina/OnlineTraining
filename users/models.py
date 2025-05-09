@@ -57,7 +57,8 @@ class Payments(models.Model):
     paid_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True, null=True,
                                     verbose_name='оплаченный урок')
     amount_payment = models.PositiveIntegerField(verbose_name='Сумма оплаты', blank=True, null=True)
-    method_payment = models.CharField(max_length=250, choices=STATUS_CHOICES, default=CASH, verbose_name='Способ оплаты')
+    method_payment = models.CharField(max_length=250, choices=STATUS_CHOICES, default=CASH,
+                                      verbose_name='Способ оплаты')
     session_id = models.CharField(max_length=250, blank=True, null=True, verbose_name='ID сессии')
     link = models.URLField(max_length=400, blank=True, null=True, verbose_name='Ссылка на оплату')
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_payments', default=1,
