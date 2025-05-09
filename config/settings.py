@@ -5,6 +5,10 @@ from pathlib import Path
 from django.core.management.utils import get_random_secret_key
 
 from dotenv import load_dotenv
+import stripe
+
+
+stripe.api_key = os.getenv('STRIPE_API_KEY')
 
 load_dotenv(override=True)
 
