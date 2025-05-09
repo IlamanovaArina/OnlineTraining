@@ -79,14 +79,8 @@ class LessonsTest(APITestCase):
             'description': 'Описание'
         }
         response = self.client.put(url, data=data)
-        # print("то что надо", response.data)
-        # {'id': 5, 'created_at': '2025-05-09 18:32:10.419216+00:00', 'updated_at': '2025-05-09 18:32:10.432923+00:00',
-        # 'name': 'Test 3', 'id_stripe_product': '', 'preview': None, 'description': 'Описание', 'link_to_video': 'https://www.youtube.com/lesson1/',
-        # 'price': 0, 'course': None, 'owner': 8}
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    #     {'id': 1, 'created_at': '2025-05-09 18:29:14.265622+00:00', 'course': 1, 'lesson': None, 'user': 1}
 
     def test_lesson_delete(self):
         """Тест удаления урока по Primary Key."""
