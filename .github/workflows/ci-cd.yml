@@ -1,4 +1,4 @@
-name: Django CI CD
+name: Django CI
 
 on: [push, pull_request]
 
@@ -21,48 +21,6 @@ jobs:
 
       - name: Run Flake8
         run: flake8 .
-
-#  test:
-#    needs: lint
-#    runs-on: ubuntu-latest
-#
-#    steps:
-##      - name: Set environment variables for testing
-###        env:
-###          TESTING: '1'
-##        run: echo "TESTING=1" >> $GITHUB_ENV
-#
-#      - name: Check out code
-#        uses: actions/checkout@v3
-#
-#      - name: Set up Python
-#        uses: actions/setup-python@v4
-#        with:
-#          python-version: '3.12'
-#
-##      - name: Cache pip
-##        uses: actions/cache@v3
-##        with:
-##          path: ~/.cache/pip
-##          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-##          restore-keys: |
-##            ${{ runner.os }}-pip-
-#
-#      - name: Install dependencies
-#        run: |
-#          python -m pip install --upgrade pip
-#          pip install -r requirements.txt
-#
-#      - name: Run migrations
-#        run: python manage.py migrate
-##          python manage.py makemigrations
-##          python manage.py migrate
-#
-#      - name: Run tests
-#        env:
-#          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-#          TESTING: '1'
-#        run: python manage.py test
 
   test:
     needs: lint
@@ -118,8 +76,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest .
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/nginx:latest nginx/.
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining:latest .
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining_nginx:latest nginx/.
 
       - name: Push Docker image to Docker Hub
         run: |
@@ -166,7 +124,6 @@ jobs:
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
-
       - name: Run Server
         run: |
           ssh -o StrictHostKeyChecking=no -vT ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
