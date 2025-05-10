@@ -1,4 +1,3 @@
-from locale import currency
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.response import Response
@@ -16,7 +15,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     """Класс представления вида ViewSet для эндпоинтов курса."""
 
     serializer_class = CourseSerializer
-    queryset = Course.objects.all().order_by('id')
+    queryset = Course.objects.all().order_by('created_at').distinct()
     pagination_class = MaterialsPagination
     permission_classes = [AllowAny]
 
@@ -38,7 +37,6 @@ class CourseViewSet(viewsets.ModelViewSet):
         new_course.owner = self.request.user
         new_course.id_stripe_product = create_stripe_product(new_course).id
         new_course.save()
-
 
     def perform_update(self, serializer):
         """Метод вносит изменение в сериализатор редактирования "Курса"."""
@@ -87,15 +85,13 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_400_BAD_REQUEST)
 
         # Если нет активной подписки, сохраняем новую
-        subscription1 = serializer.save(owner=user)
-        # self.log(subscription1, 'создан')
+        serializer.save(owner=user)
         return Response({"message": f"Подписка на курс: {course} добавлена."}, status=status.HTTP_201_CREATED)
 
     def perform_update(self, serializer):
         """Метод вносит изменение в сериализатор редактирования "Курса"."""
 
         course = serializer.save()
-        # self.log(course, 'обновлён')
         course.updated_at = timezone.now()
         course.save()
 
@@ -117,15 +113,12 @@ class LessonListAPIView(generics.ListAPIView):
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all().order_by('id')
-    # permission_classes = [AllowAny]
-    # permission_classes = [IsAuthenticated]
     permission_classes = [IsAuthenticated & ModeratorPermission | IsOwner]
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
     queryset = Lesson.objects.all().order_by('id')
     serializer_class = LessonSerializer
-    # permission_classes = [AllowAny]
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
@@ -139,7 +132,6 @@ class LessonCreateAPIView(generics.CreateAPIView):
 class LessonUpdateAPIView(generics.UpdateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    # permission_classes = [AllowAny]
     permission_classes = [IsAuthenticated & ModeratorPermission | IsAuthenticated & IsOwner]
 
     def update(self, request, *args, **kwargs):
@@ -153,8 +145,6 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
         course_id = 0
         if request.data.get("course"):
             course_id = request.data.get("course")
-        # elif self.course:
-        #     course_id = self.course
 
         if course_id:
             subscriptions = Subscription.objects.filter(course=course_id)
@@ -182,33 +172,4 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
 class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    # permission_classes = [IsAuthenticated]
     permission_classes = [IsAuthenticated & ModeratorPermission | IsOwner]
-
-
-# @app.task
-# def send_course_or_lesson_update_message(title, recipient_list, name):
-#     """Отправляет сообщение об обновлении материалов курса."""
-#
-#     try:
-#         course_or_lesson = ""
-#         if name == 'Урок':
-#             course_or_lesson = 'уроке'
-#         if name == 'Курс':
-#             course_or_lesson = 'уроке'
-#
-#         if len(recipient_list) == 0:
-#             recipient_list = ['ilamanova.arina@gmail.com']
-#
-#         send_mail(
-#             subject=f'В {course_or_lesson} произошли изменения',
-#             message=f'В {course_or_lesson} "{title}" произошли изменения',
-#             from_email=EMAIL_HOST_USER,
-#             recipient_list=recipient_list,
-#             fail_silently=True
-#         )
-#         print("send_course_or_lesson_update_message: Выполнена успешно;)")
-#     except BadHeaderError:
-#         return HttpResponse('Обнаружен недопустимый заголовок.')
-#     except smtplib.SMTPException:
-#         raise smtplib.SMTPException

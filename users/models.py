@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from materials.models import Course, Lesson
 from django.contrib.auth.models import BaseUserManager
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -51,14 +52,17 @@ class Payments(models.Model):
     ]
 
     date_payment = models.DateTimeField(auto_now_add=True, verbose_name='Дата платежа')
-    paid_course = models.ForeignKey(Course, on_delete=models.CASCADE, blank=True, null=True, verbose_name='оплаченный курс')
-    paid_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True, null=True, verbose_name='оплаченный урок')
+    paid_course = models.ForeignKey(Course, on_delete=models.CASCADE, blank=True, null=True,
+                                    verbose_name='оплаченный курс')
+    paid_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True, null=True,
+                                    verbose_name='оплаченный урок')
     amount_payment = models.PositiveIntegerField(verbose_name='Сумма оплаты', blank=True, null=True)
-    method_payment = models.CharField(choices=STATUS_CHOICES, default=CASH, verbose_name='Способ оплаты')
+    method_payment = models.CharField(max_length=250, choices=STATUS_CHOICES, default=CASH,
+                                      verbose_name='Способ оплаты')
     session_id = models.CharField(max_length=250, blank=True, null=True, verbose_name='ID сессии')
     link = models.URLField(max_length=400, blank=True, null=True, verbose_name='Ссылка на оплату')
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_payments', default=1, verbose_name='Владелец')
-
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_payments',
+                              verbose_name='Владелец')
 
     class Meta:
         verbose_name = 'Платёж'
@@ -66,4 +70,3 @@ class Payments(models.Model):
 
     def __str__(self):
         return self.method_payment, self.amount
-
