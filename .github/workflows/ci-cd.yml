@@ -103,6 +103,7 @@ jobs:
       - name: Copy files
         uses: appleboy/scp-action@v0.1.7
         with:
+          ssh-strict: false
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY_PRIVATE }}
