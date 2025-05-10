@@ -81,7 +81,7 @@ jobs:
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/online-training-nginx:latest
 
   run_server:
-    needs: [ build, copy_files_in_server ]
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
