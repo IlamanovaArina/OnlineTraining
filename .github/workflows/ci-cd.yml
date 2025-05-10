@@ -59,53 +59,44 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out code
         uses: actions/checkout@v3
-
       - name: Create .env file
         run: |
           touch .env
           echo '"${{ secrets.SECRET_KEY }}"' | sed "s/\"//g" > .env
-
       - name: Login in Docker hub
         run: |
           echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
-
       - name: Build Docker image
         run: |
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining:latest .
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining_nginx:latest nginx/.
-
       - name: Push Docker image to Docker Hub
         run: |
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining:latest
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining_nginx:latest
-
   copy_files_in_server:
     needs: test
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out code
         uses: actions/checkout@v3
-
       - name: Create .env file
         run: |
           touch .env
           echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env  # Удаление кавычек в файле. P.S. их не должно быть в секретах
-
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY_PRIVATE }}
-
       - name: Проверка IP сервера
         run:
-          echo "IP сервера: ${{ secrets.SERVER_IP }}"
-
+          echo "IP сервера: $SERVER_IP"
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
       - name: Copy file
         uses: appleboy/scp-action@v0.1.7
         with:
