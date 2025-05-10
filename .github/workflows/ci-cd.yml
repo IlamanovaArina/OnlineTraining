@@ -93,7 +93,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY_PRIVATE }}
       - name: Проверка IP сервера
-        run:
+        run: |
           echo "IP сервера: $SERVER_IP"
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
