@@ -1,5 +1,5 @@
 # Указываем базовый образ
-FROM python:3.12.5-slim
+FROM python:3.12-slim
 
 # Устанавливаем рабочую директорию в контейнере
 WORKDIR /OnlineTraining
