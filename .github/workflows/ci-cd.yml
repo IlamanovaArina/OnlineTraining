@@ -81,8 +81,8 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:latest
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nginx:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining_nginx:latest
 
   copy_files_in_server:
     needs: test
