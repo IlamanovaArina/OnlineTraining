@@ -89,13 +89,15 @@ jobs:
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY_PRIVATE }}
+
       - name: Verify Docker Hub images
         run: |
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/online-training:latest
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/online-training-nginx:latest
+
       - name: Run Server
         run: |
-          ssh -o StrictHostKeyChecking=no -vT ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             cd ${{ secrets.DEPLOY_DIR }}
             sudo docker compose down
             sudo docker container prune -f
