@@ -68,8 +68,7 @@ jobs:
           echo '"${{ secrets.SECRET_KEY }}"' | sed "s/\"//g" > .env
       - name: Login to Docker Hub
         run: |
-          echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" 
-          docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+          echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
       - name: Build Docker image
         run: |
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining:latest .
@@ -97,12 +96,14 @@ jobs:
           echo "IP сервера: $SERVER_IP"
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
-      - name: Copy file
+
+      - name: Copy files
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY_PRIVATE }}
+          port: 22  # ← явно укажи порт
           source: "docker-compose.yml,.env"
           target: ${{ secrets.DEPLOY_DIR }}
 
@@ -114,7 +115,7 @@ jobs:
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.8.0
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
+          ssh-private-key: ${{ secrets.SSH_KEY_PRIVATE }}
       - name: Verify Docker Hub images
         run: |
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining:latest
