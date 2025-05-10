@@ -71,12 +71,12 @@ jobs:
           echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining:latest .
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining_nginx:latest nginx/.
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/online-training:latest .
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/online-training-nginx:latest nginx/.
       - name: Push Docker image to Docker Hub
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining:latest
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining_nginx:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/online-training:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/online-training-nginx:latest
   copy_files_in_server:
     needs: test
     runs-on: ubuntu-latest
@@ -118,8 +118,8 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_KEY_PRIVATE }}
       - name: Verify Docker Hub images
         run: |
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining:latest
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/OnlineTraining_nginx:latest
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/online-training:latest
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/online-training-nginx:latest
       - name: Run Server
         run: |
           ssh -o StrictHostKeyChecking=no -vT ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
