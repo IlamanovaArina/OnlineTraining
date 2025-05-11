@@ -108,6 +108,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no -vT ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             cd ${{ secrets.DEPLOY_DIR }}
             sudo docker compose down
-            sudo docker container prune -f
+            sudo docker container rm $(docker ps -a -q)
             sudo docker compose up -d --build
           EOF
