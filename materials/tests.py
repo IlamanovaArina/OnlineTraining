@@ -49,7 +49,6 @@ class LessonsTest(APITestCase):
         data = response.json()
         # print('test_lesson_retrieve', response.data)
 
-        # None != 10
         self.assertEqual(data.get("owner"), self.user.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data.get("name"), self.lesson.name)
@@ -58,7 +57,6 @@ class LessonsTest(APITestCase):
         """ Проверяем вывод списка объектов """
         url = reverse("materials:lesson_list")
         response = self.client.get(url)
-        # print('test_lesson_list', response.data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -70,8 +68,6 @@ class LessonsTest(APITestCase):
             'owner': self.user.pk,
         }
         response = self.client.post(url, data=data)
-        # , content_type='application/json'
-        # print('test_lesson_post', response.data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Lesson.objects.all().exists())
@@ -91,7 +87,6 @@ class LessonsTest(APITestCase):
         url = reverse("materials:lesson_delite", args=(self.lesson.id,))
         response = self.client.delete(url)
 
-        # 6 != 1
         self.assertEqual(self.lesson.id, 1)
         self.assertEqual(Lesson.objects.count(), 0)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -118,7 +113,6 @@ class CourseTest(APITestCase):
 
         response = self.client.get(url)
         data = response.json()
-        # print('test_course_retrieve', response.data)
 
         self.assertEqual(data.get("owner"), self.user.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -139,8 +133,6 @@ class CourseTest(APITestCase):
             'description': 'Описание 2'
         }
         response = self.client.post(url, data=data)
-        # , content_type='application/json'
-        # print('test_lesson_post', response.data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Course.objects.all().exists())
@@ -187,7 +179,6 @@ class SubscriptionTest(APITestCase):
 
         response = self.client.get(url)
         data = response.json()
-        # print('test_subscription_retrieve', data)
 
         self.assertEqual(data.get("user"), self.user.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -225,7 +216,6 @@ class SubscriptionTest(APITestCase):
         url = reverse("materials:subscription-detail", args=(self.subscription.id,))
         response = self.client.delete(url)
 
-        # 11 != 1
         self.assertEqual(self.subscription.id, 1)
         self.assertEqual(Subscription.objects.count(), 0)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
