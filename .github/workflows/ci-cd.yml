@@ -1,6 +1,6 @@
 name: Django CI
 
-on: [push, pull_request]
+on: push
 
 jobs:
   lint:
@@ -73,15 +73,40 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/online-training:latest .
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/online-training-nginx:latest nginx/.
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/web:latest .
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/nginx:latest nginx/.
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/celeri-worker:latest .
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/celeri-beat:latest .
       - name: Push Docker image to Docker Hub
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/online-training:latest
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/online-training-nginx:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/web:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/nginx:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/celeri-worker:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/celeri-beat:latest
+
+  copy_files_in_server:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Create .env file
+        run: |
+          touch .env
+          echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env
+
+      - name: copy file
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY_PRIVATE }}
+          source: "docker-compose.yml,.env"
+          target: ${{ secrets.DEPLOY_DIR }}
 
   run_server:
-    needs: build
+    needs: [build, copy_files_in_server]
     runs-on: ubuntu-latest
 
     steps:
@@ -90,24 +115,11 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY_PRIVATE }}
 
-      - name: Verify Docker Hub images
-        run: |
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/online-training:latest
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/online-training-nginx:latest
-
-      - name: Add SSH Key
-        uses: webfactory/ssh-agent@v0.8.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_KEY_PRIVATE }}
-
-      - name: Check SSH Keys
-        run: ssh-add -L
-
       - name: Run Commands via SSH
         run: |
           ssh -o StrictHostKeyChecking=no -vT ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd ${{ secrets.DEPLOY_DIR }}
+            cd "${{ secrets.DEPLOY_DIR }}"
             sudo docker compose down
-            sudo docker container rm $(docker ps -a -q)
-            sudo docker compose up -d --build
+            sudo docker container prune -f
+            sudo docker compose up -d
           EOF

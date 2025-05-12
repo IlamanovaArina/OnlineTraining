@@ -19,7 +19,7 @@ SECRET_KEY = os.getenv('SECRET_KEY') or get_random_secret_key()
 
 DEBUG = True if os.getenv('DEBUG') == 'True' else False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -73,8 +73,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 if os.getenv('TESTING') == '1':
-    print("База данных определена как: sqlite3")
-    print(str(BASE_DIR / 'test_db.sqlite3'), type(str(BASE_DIR / 'test_db.sqlite3')))
+    # print("База данных определена как: sqlite3")
+    # print(str(BASE_DIR / 'test_db.sqlite3'), type(str(BASE_DIR / 'test_db.sqlite3')))
     DATABASES = {
         "default": {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -225,10 +225,10 @@ STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
 
 # Настройки для Celery
 # URL-адрес брокера сообщений
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Например, Redis, который по умолчанию работает на порту 6379
+CELERY_BROKER_URL = 'redis://redis:6379/0'  # Например, Redis, который по умолчанию работает на порту 6379
 
 # URL-адрес брокера результатов, также Redis
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
 # Часовой пояс для работы Celery
 # CELERY_TIMEZONE = "Moscow"
